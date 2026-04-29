@@ -35,17 +35,17 @@
 ## 侧栏详细结构
 
 ```
-┌── 侧栏 261px ──────────────────────────┐
+┌── 侧栏 261px (展开态) ──────────────────┐
 │ bg: --dsw-specific-sidebar-fill        │
 │     = #f9fafb                          │
 │                                         │
 │  ┌──────────────────────────────┐      │  ← padding 约 12-22px
 │  │  padding: ~12-22px           │      │
 │  │                              │      │
-│  │  ┌────┐                      │      │
-│  │  │    │  DeepSeek Logo       │      │  字色接近 --dsr-main: #4d6bfe
-│  │  │ 鲸 │  (SVG 图标 + 品牌字)  │      │  字重 --dsw-font-l-20: 500 20px
-│  │  └────┘                      │      │
+│  │  ┌────┐           ┌────┐     │      │
+│  │  │    │  DeepSeek │ ≣  │     │      │  Logo(左) + 折叠按钮(右)
+│  │  │ 鲸 │  Logo     │收起│     │      │  折叠按钮: icon 灰色,
+│  │  └────┘           └────┘     │      │  hover: --dsw-specific-sidebar-nav-item-hover
 │  │                              │      │
 │  │  ┌──────────────────────────┐│      │
 │  │  │  ⊕  开启新对话            ││      │  白色胶囊按钮，bg: #fff
@@ -84,13 +84,33 @@
 └────────────────────────────────────────┘
 ```
 
+### 侧栏折叠态
+
+```
+┌─ 侧栏 折叠态 ─┐
+│ bg: #f9fafb  │
+│               │
+│  ┌────┐       │  ← 仅显示 Logo 图标（无文字）
+│  │ 鲸 │       │
+│  └────┘       │
+│               │
+│  ┌────┐       │  ← 展开按钮
+│  │ ≣  │       │
+│  │展开│       │
+│  └────┘       │
+│               │
+└───────────────┘
+  宽度: ~60-68px (截图推断，仅保留图标)
+```
+
 ## 侧栏各元素 Token 映射
 
 | 元素 | 宽度 | 背景/颜色 | 字体 | 状态 Token |
 |------|------|-----------|------|------------|
-| 侧栏容器 | 261px | `--dsw-specific-sidebar-fill` = #f9fafb | - | - |
-| Logo 文字 | - | `--dsr-main` = #4d6bfe | `--dsw-font-l-20`: 500 20px/28px | - |
-| 新对话按钮 | auto | bg: `--dsw-alias-button-floating-fill` = #fff | `--dsw-font-s-14`: 14px/22px | shadow: `--dsw-shadow-lv1`; hover: `--dsw-alias-button-floating-hover` = #f1f3f5 |
+| 侧栏容器 | 261px (展开) / ~60-68px (折叠) | `--dsw-specific-sidebar-fill` = #f9fafb | - | - |
+| Logo 文字 | - | `--dsr-main` = #4d6bfe | `--dsw-font-l-20`: 500 20px/28px | 折叠态隐藏文字，仅保留图标 |
+| 折叠/展开按钮 | ~24-28px | icon: `--dsw-alias-label-tertiary` = #81858c | - | hover: `--dsw-specific-sidebar-nav-item-hover` = #f1f3f5 |
+| 新对话按钮 | auto | bg: `--dsw-alias-button-floating-fill` = #fff | `--dsw-font-s-14`: 14px/22px | shadow: `--dsw-shadow-lv1`; hover: `--dsw-alias-button-floating-hover` = #f1f3f5; 折叠态隐藏文字仅 ⊕ 图标 |
 | 时间分组 | - | `--dsw-alias-label-tertiary` = #81858c | `--dsw-font-xxs-12` 或 `--dsw-font-xs-13` | - |
 | 对话条目 | - | `--dsw-alias-label-primary` = #0f1115 | `--dsw-font-s-14`: 14px/22px | hover: `--dsw-specific-sidebar-nav-item-hover` = #f1f3f5; active: `--dsw-specific-sidebar-nav-item-active` = #ebeef2 |
 | 用户入口 | - | `--dsw-alias-label-secondary` = #61666b | `--dsw-font-s-14` | - |
@@ -121,9 +141,7 @@
 │     │                                                              │       │
 │     │  ③ 标题区                                                   │       │
 │     │                                                              │       │
-│     │  ④ 模式切换按钮组                                           │       │
-│     │                                                              │       │
-│     │  ⑤ 消息输入区（大圆角容器）                                   │       │
+│     │  ④ 消息输入区（大圆角容器）                                   │       │
 │     │                                                              │       │
 │     └─────────────────────────────────────────────────────────────┘       │
 │                                                                           │
@@ -155,42 +173,7 @@
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-### ④ 模式切换按钮组
-
-```
-┌── 840px 容器内，标题下方，水平居中 ───────────────────────────────────────┐
-│                                                                          │
-│                     ┌──────────────┐  ┌──────────────┐                   │
-│                     │ ⚡ 快速模式   │  │ ✦ 专家模式   │                   │
-│                     └──────────────┘  └──────────────┘                   │
-│                         ← 间距约 8px →                                   │
-│                                                                          │
-│  按钮间距: ~8px (截图推断)                                                │
-│                                                                          │
-│  ┌─ 快速模式 (active) ──────────────────┐                                │
-│  │  shape: 胶囊形 (border-radius ~50%)  │                                │
-│  │  bg: --dsw-alias-button-ghost-active-fill = #edf3fe                   │
-│  │  border: --dsw-alias-button-ghost-active-border = #b7c8fe             │
-│  │  icon color: 接近 --dsr-main = #4d6bfe                                │
-│  │  text color: 接近 --dsr-main = #4d6bfe                                │
-│  │  font: --dsw-font-s-14 或 --dsw-font-xs-13                            │
-│  │  height: --ds-input-height-s = 30px 或 --ds-input-height-m = 34px     │
-│  │  hover: --dsw-alias-button-ghost-active-hover = #e4edfd               │
-│  └──────────────────────────────────────┘                                │
-│                                                                          │
-│  ┌─ 专家模式 (inactive) ────────────────┐                                │
-│  │  shape: 胶囊形 (border-radius ~50%)  │                                │
-│  │  bg: 白色 或 透明                     │                                │
-│  │  border: --dsw-alias-border-l2 = rgba(0,0,0,.1) 或 --dsw-alias-border-l1│
-│  │  text color: --dsw-alias-label-secondary = #61666b                    │
-│  │  font: --dsw-font-s-14 或 --dsw-font-xs-13                            │
-│  │  height: 同 active 态                                                │
-│  └──────────────────────────────────────┘                                │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-## ⑤ 消息输入区（大圆角容器）
+## ④ 消息输入区（大圆角容器）
 
 ```
 ┌── 840px 容器内，模式按钮下方 ─────────────────────────────────────────────┐
@@ -221,13 +204,13 @@
 │  │  │  display: flex; justify-content: space-between              │  │  │
 │  │  │  height: ~32-40px                                            │  │  │
 │  │  │                                                              │  │  │
-│  │  │  ┌─ 左侧功能区 ──────────┐  ┌─ 右侧操作区 ────────────────┐  │  │  │
-│  │  │  │                       │  │                             │  │  │  │
-│  │  │  │  [深度思考]  [智能搜索]│  │  📎 ✨        ┌──────┐     │  │  │  │
-│  │  │  │                       │  │  (附件)(功能)  │  ⬆   │     │  │  │  │
-│  │  │  └───────────────────────┘  │              │ 发送  │     │  │  │  │
-│  │  │                             │              └──────┘     │  │  │  │
-│  │  │                             └───────────────────────────┘  │  │  │
+│  │  │  ┌─ 左侧功能区 ──────────┐  ┌─ 右侧操作区 ──────────┐    │  │  │
+│  │  │  │                       │  │                       │    │  │  │
+│  │  │  │  [智能搜索]            │  │  ✨        ┌──────┐   │    │  │  │
+│  │  │  │                       │  │  (功能)    │  ⬆   │   │    │  │  │
+│  │  │  └───────────────────────┘  │           │ 发送  │   │    │  │  │
+│  │  │                             │           └──────┘   │    │  │  │
+│  │  │                             └─────────────────────┘    │  │  │
 │  │  └─────────────────────────────────────────────────────────────┘  │  │
 │  └────────────────────────────────────────────────────────────────────┘  │
 │                                                                          │
@@ -244,27 +227,11 @@
 │  family: var(--dsw-font-family)                                         │
 └──────────────────────────────────────────────────────────────────────────┘
 
-┌─ "深度思考" 按钮 (Ghost Active 类型) ───────────────────────────────────┐
-│  shape: 小号胶囊                                                        │
-│  bg: --dsw-alias-button-ghost-active-fill = #edf3fe                     │
-│  border: --dsw-alias-button-ghost-active-border = #b7c8fe               │
-│  text/icon: --dsw-alias-brand-primary = #3964fe 或 --dsr-main = #4d6bfe │
-│  font: --dsw-font-xxs-12: 12px/18px 或 --dsw-font-xs-13: 13px/20px     │
-│  height: ~26-30px (--ds-input-height-xs 26px 或 --ds-input-height-s 30px)│
-└──────────────────────────────────────────────────────────────────────────┘
-
 ┌─ "智能搜索" 按钮 ───────────────────────────────────────────────────────┐
 │  与"深度思考"同型，可能为 inactive 态                                    │
 │  bg: 白色 / 透明                                                        │
 │  border: --dsw-alias-border-l2 = rgba(0,0,0,.1)                         │
 │  text: --dsw-alias-label-secondary = #61666b                            │
-└──────────────────────────────────────────────────────────────────────────┘
-
-┌─ 附件按钮 📎 ───────────────────────────────────────────────────────────┐
-│  icon 颜色: --dsw-alias-label-tertiary 或 --dsw-alias-label-secondary   │
-│  hover bg: --dsw-alias-interactive-bg-hover = rgba(38,49,72,.06)        │
-│  size: ~24-28px (截图推断)                                              │
-│  border-radius: 圆形或小圆角 (截图推断)                                  │
 └──────────────────────────────────────────────────────────────────────────┘
 
 ┌─ 功能按钮 ✨ ───────────────────────────────────────────────────────────┐
@@ -273,14 +240,11 @@
 
 ┌─ 发送按钮 ⬆ ───────────────────────────────────────────────────────────┐
 │  shape: 圆形                                                            │
-│  bg: 浅蓝/主色低透明态（截图推断可能为主色浅背景，非 solid 主色）         │
-│  icon: 白色或主色近白                                                   │
+│  bg: --dsw-alias-button-primary-dimmed = #679efe (浅蓝，已确认)         │
+│  icon: 白色 / --dsw-alias-label-primary-inverted = #fff                 │
 │  size: ~28-32px 直径 (截图推断)                                         │
-│  注: 代码中无直接发送按钮选择器，主按钮 token:                            │
-│      fill: --dsw-alias-button-primary-fill = #3964fe                    │
-│      hover: --dsw-alias-button-primary-hover = #5686fe                  │
-│  截图推断: 实际发送按钮颜色更浅，可能用了 dimmed 态:                      │
-│      --dsw-alias-button-primary-dimmed = #679efe                        │
+│  hover: --dsw-alias-button-primary-hover = #5686fe                      │
+│  状态: 输入为空时 disabled (opacity 降低)                                │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -297,17 +261,14 @@
 | 5 | 对话历史条目 | 侧栏中部 | 截图推断 | `--dsw-specific-sidebar-nav-item-hover: #f1f3f5`; `--dsw-alias-label-primary: #0f1115` |
 | 6 | 侧栏底部分隔 + 渐变 | 侧栏底部 | 代码 | `--dsw-linear-gradient-sidebar` |
 | 7 | 用户入口 | 侧栏底部 | 截图推断 | `--dsw-alias-label-secondary: #61666b` |
-| 8 | 顶部区域 | 主区顶部 | 截图推断 | 可能为空白或精简操作栏 |
+| 8 | 顶部区域 | 主区顶部 | 已确认 | 空白留白 |
 | 9 | 标题 "使用快速模式开始对话" | 主区中央 | 截图推断 | `--dsw-font-xl-24: 600 24px/32px`; `--dsw-alias-label-primary` |
-| 10 | "快速模式" 按钮 (active) | 主区标题下 | 截图推断 | `--dsw-alias-button-ghost-active-fill: #edf3fe`; `--dsw-alias-button-ghost-active-border: #b7c8fe` |
-| 11 | "专家模式" 按钮 (inactive) | 主区标题下 | 截图推断 | 白底 + `--dsw-alias-border-l2`; `--dsw-alias-label-secondary` |
-| 12 | 输入框容器 | 主区模式按钮下 | 截图推断 | `--dsw-specific-input-major: #fff`; `--dsr-input-border: #dce0e9`; `--dsw-shadow-lv2` |
-| 13 | 占位文字 | 输入框内 | 截图推断 | `--dsw-alias-label-caption: #adb2b8`; `--dsw-font-base-16` |
-| 14 | "深度思考" 胶囊按钮 | 输入框底部左 | 截图推断 | `--dsw-alias-button-ghost-active-fill` + border; `--ds-input-height-xs` 或 `--ds-input-height-s` |
-| 15 | "智能搜索" 胶囊按钮 | 输入框底部左 | 截图推断 | 白底 + `--dsw-alias-border-l2`; `--dsw-alias-label-secondary` |
-| 16 | 附件按钮 📎 | 输入框底部右 | 截图推断 | `--dsw-alias-interactive-bg-hover: rgba(38,49,72,.06)` |
-| 17 | 功能按钮 ✨ | 输入框底部右 | 截图推断 | 同附件按钮 |
-| 18 | 发送按钮 ⬆ | 输入框底部右 | 截图推断 | 主色浅透明圆形; `--dsw-alias-button-primary-dimmed: #679efe` |
+| 10 | 输入框容器 | 主区标题下方 | 截图推断 | `--dsw-specific-input-major: #fff`; `--dsr-input-border: #dce0e9`; `--dsw-shadow-lv2` |
+| 11 | 占位文字 | 输入框内 | 截图推断 | `--dsw-alias-label-caption: #adb2b8`; `--dsw-font-base-16` |
+| 12 | "智能搜索" 胶囊按钮 | 输入框底部左 | 截图推断 | 白底 + `--dsw-alias-border-l2`; `--dsw-alias-label-secondary` |
+| 13 | 功能按钮 ✨ | 输入框底部右 | 截图推断 | `--dsw-alias-interactive-bg-hover: rgba(38,49,72,.06)` |
+| 14 | 发送按钮 ⬆ | 输入框底部右 | 已确认 | `--dsw-alias-button-primary-dimmed: #679efe` 浅蓝圆形 |
+| 15 | 侧栏折叠/展开按钮 ≣ | 侧栏顶部右 | 已确认 | icon `--dsw-alias-label-tertiary`; hover `--dsw-specific-sidebar-nav-item-hover` |
 
 ---
 
@@ -317,10 +278,8 @@
 |------|-------|--------|-------|----------|
 | 侧栏对话条目 | bg → `--dsw-specific-sidebar-nav-item-hover` | bg → `--dsw-specific-sidebar-nav-item-active` | - | - |
 | 新对话按钮 | bg → `--dsw-alias-button-floating-hover` | - | - | - |
-| 模式按钮 (active) | bg → `--dsw-alias-button-ghost-active-hover` | - | - | - |
-| 模式按钮 (inactive) | border 加深, bg 微变 | - | - | - |
-| 深度思考/智能搜索 | 同模式按钮逻辑 | - | - | - |
-| 附件/功能按钮 | bg → `--dsw-alias-interactive-bg-hover` | bg → `--dsw-alias-interactive-bg-active` | - | - |
+| 智能搜索按钮 | border 加深, bg 微变 | - | - | - |
+| 功能按钮 | bg → `--dsw-alias-interactive-bg-hover` | bg → `--dsw-alias-interactive-bg-active` | - | - |
 | 发送按钮 | bg → `--dsw-alias-button-primary-hover` | - | - | - |
 | 输入框 | border 加深 | border → 主色; bg → `--ds-rgb-input-focus: #fff` | focus 环 (未知) | - |
 
@@ -328,13 +287,12 @@
 
 ## 待对齐确认项
 
-| # | 问题 | 当前状态 | 建议 |
-|---|------|----------|------|
-| 1 | 顶部操作栏是空白区域还是有功能条？ | 截图推断为空白/精简 | 需确认是否需要顶部导航栏 |
-| 2 | 发送按钮确切颜色 | 截图显示浅蓝/低透明态，但 `--dsw-alias-button-primary-fill` = #3964fe 是 solid 蓝 | 确认发送按钮的真实 CSS 选择器和颜色 |
-| 3 | 输入框精确圆角值 | 无 radius token，截图推断 ~20-24px | 补充 CSS 或确认 |
-| 4 | 输入框总高度 | 截图推断 ~100-140px（多行区） | 确认 min-height 和实际渲染值 |
-| 5 | "快速模式"/"专家模式" 切换是否有过渡动画？ | 未知 | 确认是否需要动画 |
-| 6 | 侧栏是否有折叠功能？ | 截图未显示折叠按钮 | 确认是否需要 |
-| 7 | 输入框底部按钮区的精确 padding | 无代码证据 | 确认具体数值 |
-| 8 | `--dsr-main: #4d6bfe` 与 `--dsw-static-deepseek-500: #3964fe` 的使用场景差异 | 双主色并存 | 明确各自职责边界 |
+| # | 问题 | 当前状态 | 决策/推断 |
+|---|------|----------|-----------|
+| 1 | 顶部操作栏 | ✅ 已确认 | 空白留白区域 |
+| 2 | 发送按钮颜色 | ✅ 已确认 | 浅蓝 `--dsw-alias-button-primary-dimmed: #679efe` |
+| 3 | 侧栏折叠功能 | ✅ 已确认 | 有折叠/展开切换，顶部右侧 ≣ 按钮 |
+| 4 | 输入框精确圆角值 | 推断 ~20-24px | 无 radius token，按推断执行 |
+| 5 | 输入框总高度 | 推断 ~100-140px（多行区） | 按推断执行 |
+| 6 | 输入框底部按钮区精确 padding | 推断 ~12-16px 上下, ~16-20px 左右 | 按推断执行 |
+| 7 | `--dsr-main: #4d6bfe` 与 `--dsw-static-deepseek-500: #3964fe` 的使用场景差异 | 双主色并存 | 组件实现时优先使用 `--dsw-*` 体系，`--dsr-*` 出现时保持一致 |
